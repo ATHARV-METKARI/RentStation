@@ -58,3 +58,8 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Analysis
+analysis/
+
+scripts/*.py
