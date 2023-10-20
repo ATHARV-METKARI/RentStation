@@ -60,6 +60,14 @@ yarn-error.log*
 Thumbs.db
 
 # Analysis
+scripts/
+docs/
+postman/
 analysis/
 
-scripts/*.py
+*.md
+*.txt
+*.drawio
+
+docs/*.md
+docs/*.drawio
