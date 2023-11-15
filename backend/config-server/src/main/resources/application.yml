@@ -1,26 +1,21 @@
+server:
+  port: 8888
+
 spring:
   application:
     name: config-server
-
-server:
-  port: ${SERVER_PORT:8888}
+  profiles:
+    active: native # Default to native for local development
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health, info, env, refresh
   endpoint:
     health:
       show-details: always
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-
 logging:
   level:
-    root: INFO
-    com.renstation: DEBUG
+    org.springframework.cloud.config.server: INFO
