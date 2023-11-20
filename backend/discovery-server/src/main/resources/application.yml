@@ -1,26 +1,37 @@
+server:
+  port: 8761
+
 spring:
   application:
     name: discovery-server
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
 
-server:
-  port: ${SERVER_PORT:8761}
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false # Recommended to disable in dev/small clusters
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health, info, metrics, env
   endpoint:
     health:
       show-details: always
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  info:
+    env:
+      enabled: true
 
 logging:
   level:
-    root: INFO
-    com.renstation: DEBUG
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
