@@ -1,26 +1,96 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: api-gateway
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
 
-server:
-  port: ${SERVER_PORT:8080}
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${cors.allowed-origins:http://localhost:3000,http://localhost:5173}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+        - id: game-service
+          uri: lb://game-service
+          predicates:
+            - Path=/api/v1/games/**
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/v1/inventory/**
+        - id: rental-service
+          uri: lb://rental-service
+          predicates:
+            - Path=/api/v1/rentals/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
+        - id: review-service
+          uri: lb://review-service
+          predicates:
+            - Path=/api/v1/reviews/**
+        - id: wishlist-service
+          uri: lb://wishlist-service
+          predicates:
+            - Path=/api/v1/wishlist/**
+        - id: admin-service
+          uri: lb://admin-service
+          predicates:
+            - Path=/api/v1/admin/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health, info, metrics
   endpoint:
     health:
       show-details: always
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 logging:
   level:
-    root: INFO
-    com.renstation: DEBUG
+    com.renstation.apigateway: DEBUG
+    org.springframework.cloud.gateway: INFO

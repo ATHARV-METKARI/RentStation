@@ -1,26 +1,10 @@
 spring:
-  application:
-    name: api-gateway
-
-server:
-  port: ${SERVER_PORT:8080}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  endpoint:
-    health:
-      show-details: always
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-
-logging:
-  level:
-    root: INFO
-    com.renstation: DEBUG
+  config:
+    activate:
+      on-profile: prod
+cors:
+  allowed-origins: "https://renstation.com,https://www.renstation.com"
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka/}
