@@ -1,39 +1,32 @@
+server:
+  port: 8088
+
 spring:
   application:
     name: review-service
-
+  config:
+    import: "optional:configserver:http://localhost:8888/"
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/review_service}
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/renstation_review?createDatabaseIfNotExist=true&useSSL=false
+    username: root
+    password: password
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
   flyway:
     enabled: true
     baseline-on-migrate: true
 
-server:
-  port: ${SERVER_PORT:8080}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  endpoint:
-    health:
-      show-details: always
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 logging:
   level:
-    root: INFO
-    com.renstation: DEBUG
+    com.renstation.review: DEBUG
