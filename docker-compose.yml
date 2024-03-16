@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: renstation-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: renstation_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init-dbs.sql:/docker-entrypoint-initdb.d/init-dbs.sql
+    networks:
+      - renstation-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: renstation-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - renstation-network
+
+  # Note: In a real deployment, we would map the ports and build the services.
+  # For local dev, we will run them via IDE/Maven, but the infrastructure is ready.
+  
+volumes:
+  mysql_data:
+
+networks:
+  renstation-network:
+    driver: bridge
